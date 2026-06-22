@@ -1,7 +1,16 @@
 pipeline {
-    agent any
+
+    agent {
+        label 'terraform'
+    }
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Terraform Init') {
             steps {
@@ -17,13 +26,22 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan'
+                sh 'terraform plan -out=tfplan'
+            }
+        }
+
+        stage('Manual Approval') {
+            steps {
+                input(
+                    message: 'Terraform Plan completed. Do you want to continue with Apply?',
+                    ok: 'Approve Apply'
+                )
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                sh 'terraform apply -auto-approve'
+                sh 'terraform apply tfplan'
             }
         }
     }
