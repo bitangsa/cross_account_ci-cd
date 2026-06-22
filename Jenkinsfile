@@ -30,15 +30,6 @@ pipeline {
             }
         }
 
-        stage('Manual Approval') {
-            steps {
-                input(
-                    message: 'Terraform Plan completed. Do you want to continue with Apply?',
-                    ok: 'Approve Apply'
-                )
-            }
-        }
-
         stage('Terraform Apply') {
             steps {
                 sh 'terraform apply tfplan'
