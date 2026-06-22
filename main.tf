@@ -7,3 +7,11 @@ resource "aws_s3_bucket" "test_bucket" {
     CreatedBy   = "Terraform"
   }
 }
+
+resource "aws_s3_object" "test_file" {
+  bucket = aws_s3_bucket.test_bucket.id
+  key    = "First-txt-file.txt"
+  source = "First-txt-file.txt"
+
+  etag = filemd5("First-txt-file.txt")
+}
